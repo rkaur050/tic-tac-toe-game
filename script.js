@@ -5,8 +5,8 @@ const dashboard = document.querySelector(".dashboard");
 const play = document.querySelector(".play");
 const cellDiv = document.querySelectorAll(".cell");
 const p = document.querySelector("p");
-const h3=document.querySelector("h3");
-const playAgain=document.querySelector(".playAgain");
+const h3 = document.querySelector("h3");
+const playAgain = document.querySelector(".playAgain");
 
 const cells = [];
 cellDiv.forEach((cell) => cells.push(cell));
@@ -36,55 +36,62 @@ function selectChoice(playerbtn, playerNum) {
 selectChoice(player1btn, 1);
 selectChoice(player2btn, 2);
 
-playAgain.addEventListener("click",()=>{
-    dashboard.classList.remove("hide");
-    play.classList.add("hide");
-    player1btn.forEach(btn=>{
-        btn.style.backgroundColor = "#FCF7E8";
-    })
-    player2btn.forEach(btn=>{
-        btn.style.backgroundColor = "#FCF7E8";
-})
-})
-
+playAgain.addEventListener("click", () => {
+  dashboard.classList.remove("hide");
+  play.classList.add("hide");
+  player1btn.forEach((btn) => {
+    btn.style.backgroundColor = "#FCF7E8";
+  });
+  player2btn.forEach((btn) => {
+    btn.style.backgroundColor = "#FCF7E8";
+    cells.forEach((cell) => {
+      cell.textContent = "";
+      cell.classList.remove("inactive");
+    });
+    h3.textContent = "";
+    p.textContent = "";
+    p1choice=null;
+    p2choice=null;
+    turn=1;
+  });
+});
 
 start.addEventListener("click", () => {
-  if (p1choice === null && p2choice === null || p1choice===null && p2choice!==null || p2choice===null && p1choice!==null) {
+  if (
+    (p1choice === null && p2choice === null) ||
+    (p1choice === null && p2choice !== null) ||
+    (p2choice === null && p1choice !== null)
+  ) {
     alert("Please Select a player type for each player");
-  }
-  else {
+  } else {
     dashboard.classList.add("hide");
     play.classList.remove("hide");
     startPlay();
   }
 });
 
-
-
 function startPlay() {
   if (p1choice === "computer" && p2choice === "computer") {
-    computerVscomputer();
+    ComputerVsComputer();
   } else if (p1choice === "computer" && p2choice === "human") {
     if (computerMove()) return;
     humanMove();
-  }else if (p1choice==='human' && p2choice==='computer'){
-    if(turn==1)humanMove();
-    else if((computerMove()))  return;
-  }else {
-    if(turn==1)
-        h3.textContent='Turn of Player 1';
-    if(turn==2)
-        h3.textContent='Turn of Player 2';
+  } else if (p1choice === "human" && p2choice === "computer") {
+    if (turn == 1) humanMove();
+    else if (computerMove()) return;
+  } else {
+    if (turn == 1) h3.textContent = "Turn of Player 1";
+    if (turn == 2) h3.textContent = "Turn of Player 2";
     humanMove();
     let availableCells = cells.filter((cell) => cell.textContent === "");
-  if (availableCells.length === 0) {
-    h3.textContent='';
-    p.textContent="It's a tie!";
-    disableCells();
-    return ;
+    if (availableCells.length === 0) {
+      h3.textContent = "";
+      p.textContent = "It's a tie!";
+      disableCells();
+      return;
+    }
   }
-}}
-
+}
 
 function humanMove() {
   cells.forEach((cell) =>
@@ -100,18 +107,17 @@ function humanMove() {
         }
         winner = checkWinner(cells);
         if (winner === null) startPlay();
-        else{
-            h3.textContent='';
+        else {
+          h3.textContent = "";
           if (winner === "X") p.textContent = "Player1 is the winner!";
           else p.textContent = "Player2 is the winner!";
           disableCells();
-          return ;
+          return;
         }
       }
     })
   );
 }
-
 
 function computerMove() {
   let markCell = selectCellComputer(cells);
@@ -127,15 +133,14 @@ function computerMove() {
     turn = 1;
   }
   winner = checkWinner(cells);
-  if (winner === null){
+  if (winner === null) {
     let availableCells = cells.filter((cell) => cell.textContent === "");
-  if (availableCells.length === 0) {
-    p.textContent="It's a tie!";
-    disableCells();
-    return true;
-  }else
-    return false;
-} 
+    if (availableCells.length === 0) {
+      p.textContent = "It's a tie!";
+      disableCells();
+      return true;
+    } else return false;
+  }
   {
     if (winner === "X") p.textContent = "Player1 is the winner!";
     else p.textContent = "Player2 is the winner!";
@@ -145,9 +150,12 @@ function computerMove() {
 }
 
 function ComputerVsComputer() {
-  if (p1choice == "computer" && p2choice == "computer") {
+  function makeMove(){
     let markCell = selectCellComputer(cells);
-    while (markCell) {
+    if(markCell===null){
+      p.textContent="It's a tie!";
+      return ;
+    }     
       if (turn == 1) {
         markCell.textContent = "X";
         turn = 2;
@@ -156,28 +164,29 @@ function ComputerVsComputer() {
         turn = 1;
       }
       winner = checkWinner(cells);
-      if (winner != null) break;
+      if (winner=== null){
       let availableCells = cells.filter((cell) => cell.textContent === "");
       if (availableCells.length === 0) {
         p.textContent = "It's a tie!";
         disableCells();
         return;
+      }else{
+        setTimeout(makeMove, 500);
       }
-      markCell = selectCellAi(cells);
-    }
+    }else{
     if (winner === "X") p.textContent = "Player1 is the winner!";
     else p.textContent = "Player2 is the winner!";
     disableCells();
-  }
+    }
+  }makeMove();
 }
 
 function selectCellComputer(cells) {
-    let availableCells = cells.filter((cell) => cell.textContent === "");
-    if (availableCells.length === 0) return null;
-    const index = Math.floor(Math.random() * availableCells.length);
-    return availableCells[index];
-  }
-  
+  let availableCells = cells.filter((cell) => cell.textContent === "");
+  if (availableCells.length === 0) return null;
+  const index = Math.floor(Math.random() * availableCells.length);
+  return availableCells[index];
+}
 
 function checkWinner(cells) {
   const winnigCombos = [
@@ -201,9 +210,8 @@ function checkWinner(cells) {
   return null;
 }
 
-function disableCells(){
-    cells.forEach(cell=>{
-        if(cell.textContent==='')
-            cell.classList.add('inactive');
-    })
+function disableCells() {
+  cells.forEach((cell) => {
+    if (cell.textContent === "") cell.classList.add("inactive");
+  });
 }
