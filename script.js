@@ -62,14 +62,14 @@ start.addEventListener("click", () => {
 
 
 function startPlay() {
-  if (p1choice === "ai" && p2choice === "ai") {
-    aiVsai();
-  } else if (p1choice === "ai" && p2choice === "human") {
-    if (aiMove()) return;
+  if (p1choice === "computer" && p2choice === "computer") {
+    computerVscomputer();
+  } else if (p1choice === "computer" && p2choice === "human") {
+    if (computerMove()) return;
     humanMove();
-  }else if (p1choice==='human' && p2choice==='ai'){
+  }else if (p1choice==='human' && p2choice==='computer'){
     if(turn==1)humanMove();
-    else if((aiMove()))  return;
+    else if((computerMove()))  return;
   }else {
     if(turn==1)
         h3.textContent='Turn of Player 1';
@@ -113,8 +113,8 @@ function humanMove() {
 }
 
 
-function aiMove() {
-  let markCell = selectCellAi(cells);
+function computerMove() {
+  let markCell = selectCellComputer(cells);
   if (markCell === null) {
     p.textContent = "It's a tie!";
     return;
@@ -144,9 +144,9 @@ function aiMove() {
   }
 }
 
-function aiVsai() {
-  if (p1choice == "ai" && p2choice == "ai") {
-    let markCell = selectCellAi(cells);
+function ComputerVsComputer() {
+  if (p1choice == "computer" && p2choice == "computer") {
+    let markCell = selectCellComputer(cells);
     while (markCell) {
       if (turn == 1) {
         markCell.textContent = "X";
@@ -171,7 +171,7 @@ function aiVsai() {
   }
 }
 
-function selectCellAi(cells) {
+function selectCellComputer(cells) {
     let availableCells = cells.filter((cell) => cell.textContent === "");
     if (availableCells.length === 0) return null;
     const index = Math.floor(Math.random() * availableCells.length);
