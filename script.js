@@ -47,6 +47,7 @@ playAgain.addEventListener("click", () => {
     cells.forEach((cell) => {
       cell.textContent = "";
       cell.classList.remove("inactive");
+      cell.classList.remove("won");
     });
     h3.textContent = "";
     p.textContent = "";
@@ -204,8 +205,12 @@ function checkWinner(cells) {
       cells[a].textContent &&
       cells[a].textContent === cells[b].textContent &&
       cells[b].textContent === cells[c].textContent
-    )
+    ){
+      cells[a].classList.add("won");
+      cells[b].classList.add("won");
+      cells[c].classList.add("won");
       return cells[a].textContent;
+    }
   }
   return null;
 }
@@ -213,5 +218,6 @@ function checkWinner(cells) {
 function disableCells() {
   cells.forEach((cell) => {
     if (cell.textContent === "") cell.classList.add("inactive");
+    if(!cell.classList.contains("won")) cell.classList.add("inactive");
   });
 }

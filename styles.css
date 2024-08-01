@@ -85,6 +85,7 @@ p{
 }
 .inactive {
     pointer-events: none;
+}
+.won{
     background-color: #EDEAE3;
-  }
-
+}
